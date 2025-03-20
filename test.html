@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+    <style>
+        body { margin: 20px; font-family: Arial, sans-serif; }
+        #clients { display: flex; gap: 20px; }
+        .client { border: 1px solid #ccc; padding: 10px; width: 300px; }
+        .messages { height: 200px; overflow-y: auto; border: 1px solid #eee; padding: 10px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Test</h1>
+    
+    <div id="clients">
+        <div class="client">
+            <h3>Client 1</h3>
+            <button onclick="connectClient(1)">Connect</button>
+            <button onclick="sendMessage(1)">Send Message</button>
+            <div id="messages1" class="messages"></div>
+        </div>
+        
+        <div class="client">
+            <h3>Client 2</h3>
+            <button onclick="connectClient(2)">Connect</button>
+            <button onclick="sendMessage(2)">Send Message</button>
+            <div id="messages2" class="messages"></div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h3>Broadcast Message</h3>
+        <input type="text" id="broadcastMessage" value="Hello everyone!">
+        <button onclick="sendBroadcast()">Send to All</button>
+        <div id="broadcastResult"></div>
+    </div>
+    
+    <script>
+        const clients = {};
+        
+        function log(clientId, message) {
+            const messagesDiv = document.getElementById(`messages${clientId}`);
+            const entry = document.createElement('div');
+            entry.textContent = message;
+            messagesDiv.appendChild(entry);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function connectClient(clientId) {
+            if (clients[clientId]) {
+                log(clientId, "Already connected");
+                return;
+            }
+            
+            const ws = new WebSocket('ws://localhost:8080/ws');
+            
+            ws.onopen = () => {
+                log(clientId, "Connected");
+                clients[clientId] = ws;
+            };
+            
+            ws.onmessage = (event) => {
+                log(clientId, `Received: ${event.data}`);
+            };
+            
+            ws.onclose = () => {
+                log(clientId, "Disconnected");
+                delete clients[clientId];
+            };
+            
+            ws.onerror = (error) => {
+                log(clientId, `Error: ${error}`);
+            };
+        }
+        
+        function sendMessage(clientId) {
+            if (!clients[clientId]) {
+                log(clientId, "Not connected");
+                return;
+            }
+            
+            const message = `Hello from client ${clientId}`;
+            clients[clientId].send(message);
+            log(clientId, `Sent: ${message}`);
+        }
+        
+        function sendBroadcast() {
+            const message = document.getElementById('broadcastMessage').value;
+            const resultDiv = document.getElementById('broadcastResult');
+            
+            // Using XMLHttpRequest instead of fetch
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://localhost:8080/broadcast', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    resultDiv.textContent = `Broadcast sent: ${xhr.responseText}`;
+                } else {
+                    resultDiv.textContent = `Error: ${xhr.status} - ${xhr.statusText}`;
+                }
+            };
+            
+            xhr.onerror = function() {
+                resultDiv.textContent = "Network error occurred";
+            };
+            
+            xhr.send('message=' + encodeURIComponent(message));
+        }
+    </script>
+</body>
+</html>

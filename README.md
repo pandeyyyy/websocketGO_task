@@ -1,7 +1,7 @@
 # websocketGO_task
 
-IN TERMINAL:
-# Install dependencies
+IN TERMINAL
+Install dependencies
 
 # Run the server
 go run main.go

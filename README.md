@@ -24,11 +24,11 @@ ws2.onopen = () => { console.log('Client 2 connected'); };
 
 # then open test.html in 3rd tab(incognito)
 
-# Click "Connect" on Client 1 and Client 2
-# Click "Send Message" on either client to test individual messages
-# Type something in the broadcast text field and click "Send to All"
-# Watch both clients receive the same broadcast message
-# Check terminal window to see logged messages with client IDs
+### Click "Connect" on Client 1 and Client 2
+### Click "Send Message" on either client to test individual messages
+### Type something in the broadcast text field and click "Send to All"
+### Watch both clients receive the same broadcast message
+### Check terminal window to see logged messages with client IDs
 
 
 

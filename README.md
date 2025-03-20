@@ -22,7 +22,7 @@ const ws2 = new WebSocket('ws://localhost:8080/ws');
 ws2.onmessage = (event) => { console.log('Client 2 received:', event.data); };
 ws2.onopen = () => { console.log('Client 2 connected'); };
 
-# then open test.html in 3rd tab(incognito)
+# then open test.html in 3rd tab
 
 ### Click "Connect" on Client 1 and Client 2
 ### Click "Send Message" on either client to test individual messages

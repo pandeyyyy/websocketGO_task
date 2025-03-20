@@ -11,11 +11,13 @@ press F12 to open console  and open in incognito mode as there was some security
 
 we can make multiple connections but for testing i am taking only 2, many can be added just by opening different tabs
 # Create connection 1 in one tab (incognito)
+IN CONSOLE BOX TYPE:
 const ws1 = new WebSocket('ws://localhost:8080/ws');
 ws1.onmessage = (event) => { console.log('Client 1 received:', event.data); };
 ws1.onopen = () => { console.log('Client 1 connected'); };
    
 # Create connection 2 in 2nd tab(incognito)
+IN CONSOLE BOX TYPE:
 const ws2 = new WebSocket('ws://localhost:8080/ws');
 ws2.onmessage = (event) => { console.log('Client 2 received:', event.data); };
 ws2.onopen = () => { console.log('Client 2 connected'); };
